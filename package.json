@@ -1,0 +1,11 @@
+{
+  "name": "dice-roll",
+  "description": "A simple page that uses Three.js to roll some dice",
+  "version": "0.0.1",
+  "author": "Jonathan Arnett",
+  "devDependencies": {
+    "grunt-cli": "~0.1.13",
+    "grunt-contrib-connect": "^0.8.0",
+    "grunt-contrib-watch": "~0.6.1"
+  }
+}
