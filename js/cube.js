@@ -1,32 +1,69 @@
-var scene = new THREE.Scene();
-var camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-var renderer = new THREE.WebGLRenderer();
+// Cube rotation
+var stop = false;
+var scene, camera, renderer, cube;
 
-// Size renderer
-renderer.setSize(window.innerWidth, window.innerHeight);
+$(".stop-button").click(function() {
+  stop = !stop;
+});
 
-// Add element to body
-document.body.appendChild(renderer.domElement);
+init();
+animate();
 
-// Set up the cube
-var geometry = new THREE.BoxGeometry(1, 1, 1);
-var material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
-var cube = new THREE.Mesh(geometry, material);
+// Setup scene
+function init() {
+  // Set up renderer
+  renderer = new THREE.WebGLRenderer();
+  renderer.setSize(window.innerWidth, window.innerHeight * 0.9);
+  document.body.appendChild(renderer.domElement);
 
-// Add cube to scene
-scene.add(cube);
+  // Setup camera
+  camera = new THREE.PerspectiveCamera(75,
+     window.innerWidth / window.innerHeight,
+     0.1,
+     1000);
+  camera.position.z = 300;
+  camera.position.y = 50;
 
-// Move the camera to a better viewpoint
-camera.position.z = 5;
+  scene = new THREE.Scene();
+
+  // Set up the cube
+  var geometry = new THREE.BoxGeometry(50, 50, 50);
+  var materials = [];
+  for (i=1; i<=6; i++) {
+    var path = "img/dice_faces/die" + String(i) + ".png";
+    materials.push(new THREE.MeshLambertMaterial({
+      map: THREE.ImageUtils.loadTexture(path)
+    }));
+  }
+  var material = new THREE.MeshFaceMaterial(materials);
+  // var material = new THREE.MeshLambertMaterial({map: THREE.ImageUtils.loadTexture("img/dice_faces/die1.png")});
+  // var material = new THREE.MeshLambertMaterial({color: 0x00FF00});
+  cube = new THREE.Mesh(geometry, material);
+  scene.add(cube);
+
+  // Ambient lighting
+  var light = new THREE.AmbientLight(0xFFFFFF);
+  scene.add(light);
+
+  // Directional lighting
+  var directionalLight = new THREE.DirectionalLight(0xffffff, 0.5);
+  directionalLight.position.set(1, 1, 1).normalize();
+  scene.add(directionalLight);
+}
+
+function resize() {
+  renderer.setSize(window.innerWidth, window.innerHeight);
+}
 
 // Render loop
-function render() {
-  requestAnimationFrame(render);
+function animate() {
+  requestAnimationFrame(animate);
 
   // Rotate cube
-  cube.rotation.x += 0.1;
-  cube.rotation.y += 0.1;
+  // cube.rotation.x += 0.1;
+  if (!stop) {
+    cube.rotation.y += 0.01;
+  }
 
   renderer.render(scene, camera);
 }
-render();
